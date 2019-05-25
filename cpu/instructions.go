@@ -1,7 +1,5 @@
 package cpu
 
-import "fmt"
-
 type Instruction struct {
 	Opcode  uint16
 	Execute func(uint16)
