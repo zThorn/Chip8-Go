@@ -40,11 +40,23 @@ func (cpu *C8CPU) loadInstructions() {
 	cpu.Instructions[0x3000] = cpu.op_3XNN
 	cpu.Instructions[0x4000] = cpu.op_4XNN
 	cpu.Instructions[0x5000] = cpu.op_5XY0
+	cpu.Instructions[0x6000] = cpu.op_6XNN
+	cpu.Instructions[0x7000] = cpu.op_7XNN
+	cpu.Instructions[0x8000] = cpu.op_8XY0
+	cpu.Instructions[0x8001] = cpu.op_8XY1
+	cpu.Instructions[0x8002] = cpu.op_8XY2
+	cpu.Instructions[0x8003] = cpu.op_8XY3
+
 }
 
 func (cpu *C8CPU) Cycle(opcode uint16) {
 	//var opcode uint16 = (cpu.memory[cpu.pc] << uint(8)) | (cpu.memory[cpu.pc+1])
 	instr := opcode & 0xf000
+
+	if instr == 0x8000{
+		instr = opcode & 0xf00f
+	}
+
 	//Advance the PC
 	cpu.PC += 2
 	if cpu.debug != true {
@@ -55,17 +67,45 @@ func (cpu *C8CPU) Cycle(opcode uint16) {
 	}
 	cpu.vxr = cpu.registers[cpu.vx]
 	cpu.vyr = cpu.registers[cpu.vy]
+
+
 	cpu.Instructions[instr](opcode)
+}
+
+//VX Helper Methods
+func (cpu *C8CPU) GetVX() uint16 {
+	return cpu.vx
 }
 func (cpu *C8CPU) SetVX(vx uint16) {
 	cpu.vx = vx
 }
+func (cpu *C8CPU) GetVXR() uint16 {
+	return cpu.registers[cpu.vx]
+}
+func (cpu *C8CPU) SetRegVX(val uint16) {
+	cpu.registers[cpu.vx] = val
+}
+
+// VY Helper methods
+func (cpu *C8CPU) GetVY() uint16 {
+	return cpu.vy
+}
 func (cpu *C8CPU) SetVY(vy uint16) {
 	cpu.vy = vy
 }
+func (cpu *C8CPU) GetVYR() uint16 {
+	return cpu.registers[cpu.vy]
+}
+func (cpu *C8CPU) SetRegVY(val uint16) {
+	cpu.registers[cpu.vy] = val
+}
 
-func (cpu *C8CPU) SetRegVX(val uint16) {
-	cpu.registers[cpu.vx] = val
+// VF Methods
+func (cpu *C8CPU) GetVF() uint16 {
+	return cpu.registers[0xf]
+}
+func (cpu *C8CPU) SetVF(vf uint16) {
+	cpu.registers[0xf] = vf
 }
 
 func (cpu *C8CPU) SetRegVXVY(vx uint16, vy uint16, val uint16) {
