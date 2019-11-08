@@ -79,3 +79,12 @@ func (cpu *C8CPU) op_8XY6(opcode uint16) {
 	cpu.SetVF(cpu.registers[cpu.vx] & 0x01)
 	cpu.SetRegVX(cpu.GetVXR() >> 1)
 }
+
+func (cpu *C8CPU) op_8XY7(opcode uint16) {
+	if cpu.GetVYR() < cpu.GetVXR(){
+		cpu.SetVF(0)
+	} else{
+		cpu.SetVF(1)
+	}
+	cpu.registers[cpu.vy] -= cpu.GetVYR()
+}
